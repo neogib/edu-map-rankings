@@ -7,6 +7,7 @@ from src.data_import.api.fetcher import SchoolsAPIFetcher
 from src.data_import.core.config import APISettings, ExamType, ScoreType
 from src.data_import.excel.db.table_splitter import TableSplitter
 from src.data_import.excel.reader import ExcelReader
+from src.data_import.geo.geocoder import GeoCoder
 from src.data_import.score.scorer import Scorer
 
 logger = logging.getLogger(__name__)
@@ -111,6 +112,15 @@ def update_scoring():
     logger.info("🎉 Score calculation completed")
 
 
+def update_coordinates():
+    logger.info("📍 Updating school coordinates...")
+
+    with GeoCoder() as geocoder:
+        geocoder.update_school_coordinates()
+
+    logger.info("✅ School coordinates updated successfully")
+
+
 def main():
     configure_logging()
     logger.info("🛠️ Creating database and tables...")
@@ -122,6 +132,9 @@ def main():
 
     logger.info("📊 Starting score calculation...")
     update_scoring()
+
+    logger.info("📍 Starting geocoding update...")
+    update_coordinates()
 
 
 if __name__ == "__main__":
