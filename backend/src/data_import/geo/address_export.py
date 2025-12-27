@@ -4,7 +4,6 @@ from typing import cast
 
 from sqlmodel import Session, select
 
-from src.app.models.locations import Gmina, Miejscowosc, Powiat, Ulica, Wojewodztwo
 from src.app.models.schools import Szkola
 from src.data_import.utils.db.session import DatabaseManagerBase
 
@@ -106,7 +105,7 @@ class AddressExport(DatabaseManagerBase):
         schools = session.exec(
             select(Szkola)
             .where(cast(int, Szkola.id) > last_id)
-            .order_by(Szkola.id)
+            .order_by(Szkola.id)  # pyright: ignore[reportArgumentType]
             .limit(batch_size)
         ).all()
         return schools
