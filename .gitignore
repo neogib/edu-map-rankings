@@ -88,6 +88,9 @@ logs/
 *.log
 *.log.*
 
+# created datasets
+*.csv
+
 # Testing and Coverage
 coverage/
 .nyc_output/
