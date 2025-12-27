@@ -72,31 +72,33 @@ class AddressExport(DatabaseManagerBase):
 
                 # Iterate over schools and write their addresses
                 for school in schools:
-                    # Get location hierarchy
-                    miejscowosc = school.miejscowosc
-                    gmina = miejscowosc.gmina
-                    powiat = gmina.powiat
-                    wojewodztwo = powiat.wojewodztwo
-
                     # Write row
-                    writer.writerow(
-                        [
-                            school.id,
-                            wojewodztwo.nazwa,
-                            powiat.nazwa,
-                            gmina.nazwa,
-                            miejscowosc.nazwa,
-                            school.ulica.nazwa if school.ulica else "",
-                            school.numer_budynku or "",
-                            school.kod_pocztowy,
-                        ]
-                    )
-
+                    writer.writerow(self.get_school_address(school))
                     total_processed += 1
+
             last_id += batch_size
         logger.info(
             f"✅ Completed exporting school addresses. Total schools processed: {total_processed}"
         )
+
+    def get_school_address(self, school: Szkola) -> list[str | int | None]:
+        """Write a single row to the CSV file"""
+        # Get location hierarchy
+        miejscowosc = school.miejscowosc
+        gmina = miejscowosc.gmina
+        powiat = gmina.powiat
+        wojewodztwo = powiat.wojewodztwo
+
+        return [
+            school.id,
+            wojewodztwo.nazwa,
+            powiat.nazwa,
+            gmina.nazwa,
+            miejscowosc.nazwa,
+            school.ulica.nazwa if school.ulica else "",
+            school.numer_budynku or "",
+            school.kod_pocztowy,
+        ]
 
     def get_schools_batch(
         self, session: Session, last_id: int = 0, batch_size: int = 1000
