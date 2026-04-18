@@ -3,9 +3,6 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query
 
 from app.dependencies import SessionDep
-from app.models.schools import (
-    Szkola,
-)
 from app.schemas.school_filters import SchoolFilterParams
 from app.schemas.schools import (
     SzkolaPublicShort,
@@ -36,6 +33,8 @@ async def read_schools_live(
     return service.get_schools_live(filters)
 
 
-@router.get("/{school_id}", response_model=SzkolaPublicWithRelations)
-async def read_school(school_id: int, service: SchoolServiceDep) -> Szkola:
+@router.get("/{school_id}")
+async def read_school(
+    school_id: int, service: SchoolServiceDep
+) -> SzkolaPublicWithRelations:
     return service.get_school_with_relations(school_id)

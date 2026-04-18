@@ -47,6 +47,8 @@ class SzkolaPublicWithRelations(SzkolaPublic):
     wyniki_e8: list[WynikE8PublicWithPrzedmiot]
     wyniki_em: list[WynikEMPublicWithPrzedmiot]
     rankingi: list[RankingPublic]
+    latitude: float | None = None
+    longitude: float | None = None
 
 
 class SzkolaRankingRow(CustomBaseModel, SzkolaBase):

@@ -1,12 +1,14 @@
+from typing import cast
+
 from sqlalchemy.orm import joinedload, selectinload
-from sqlmodel import Session, select
+from sqlmodel import Session, func, select
 
 from app.core.sqlalchemy_typing import orm_rel_attr
 from app.models.exam_results import WynikE8, WynikEM
 from app.models.locations import Gmina, Miejscowosc, Powiat
 from app.models.schools import Szkola
 from app.schemas.school_filters import SchoolFilterParams
-from app.schemas.schools import SzkolaPublicShort
+from app.schemas.schools import SzkolaPublicShort, SzkolaPublicWithRelations
 from app.services.base_service import BaseService
 from app.services.exceptions import EntityNotFoundError
 from app.services.school_filters import build_schools_short_query
@@ -19,9 +21,13 @@ class SchoolService(BaseService[Szkola]):
     def get_school(self, school_id: int) -> Szkola:
         return self._get_entity(school_id)
 
-    def get_school_with_relations(self, school_id: int) -> Szkola:
+    def get_school_with_relations(self, school_id: int) -> SzkolaPublicWithRelations:
         stmt = (
-            select(Szkola)
+            select(
+                Szkola,
+                func.ST_Y(Szkola.geom).label("latitude"),
+                func.ST_X(Szkola.geom).label("longitude"),
+            )
             .where(Szkola.id == school_id)
             .options(
                 joinedload(orm_rel_attr(Szkola.typ)),
@@ -43,11 +49,21 @@ class SchoolService(BaseService[Szkola]):
                 selectinload(orm_rel_attr(Szkola.rankingi)),
             )
         )
-        school = self.session.exec(stmt).first()
-        if not school:
+        row = self.session.exec(stmt).first()
+        if not row:
             raise EntityNotFoundError(entity_id=school_id, model_name=Szkola.__name__)
-        school.wyniki_e8.sort(key=lambda w: (w.rok, w.przedmiot.nazwa))
-        school.wyniki_em.sort(key=lambda w: (w.rok, w.przedmiot.nazwa))
+
+        base_school, latitude, longitude = cast(
+            tuple[Szkola, float | None, float | None], row
+        )
+        base_school.wyniki_e8.sort(key=lambda w: (w.rok, w.przedmiot.nazwa))
+        base_school.wyniki_em.sort(key=lambda w: (w.rok, w.przedmiot.nazwa))
+
+        school = SzkolaPublicWithRelations.model_validate(
+            base_school, from_attributes=True
+        )
+        school.latitude = latitude
+        school.longitude = longitude
         return school
 
     def get_schools(self) -> list[Szkola]:
