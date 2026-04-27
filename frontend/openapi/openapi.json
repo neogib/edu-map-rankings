@@ -658,6 +658,47 @@
         }
       }
     },
+    "/api/v1/contact": {
+      "post": {
+        "tags": [
+          "contact"
+        ],
+        "summary": "Submit Contact",
+        "operationId": "submit_contact_api_v1_contact_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactSubmitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactSubmitResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/test": {
       "get": {
         "summary": "Root",
@@ -677,6 +718,62 @@
   },
   "components": {
     "schemas": {
+      "ContactSubmitRequest": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 254,
+            "format": "email",
+            "title": "Email"
+          },
+          "topic": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 1,
+            "title": "Topic"
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Message"
+          },
+          "turnstileToken": {
+            "type": "string",
+            "maxLength": 2048,
+            "minLength": 1,
+            "title": "Turnstiletoken"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "topic",
+          "message",
+          "turnstileToken"
+        ],
+        "title": "ContactSubmitRequest"
+      },
+      "ContactSubmitResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "title": "ContactSubmitResponse"
+      },
       "EtapEdukacjiPublic": {
         "properties": {
           "nazwa": {
@@ -926,7 +1023,7 @@
         "properties": {
           "rok": {
             "type": "integer",
-            "minimum": 2000.0,
+            "minimum": 2000,
             "title": "Rok"
           },
           "rodzajRankingu": {
@@ -934,56 +1031,56 @@
           },
           "wynik": {
             "type": "number",
-            "maximum": 100.0,
-            "minimum": 0.0,
+            "maximum": 100,
+            "minimum": 0,
             "title": "Wynik"
           },
           "percentylKraj": {
             "type": "number",
-            "maximum": 100.0,
-            "minimum": 0.0,
+            "maximum": 100,
+            "minimum": 0,
             "title": "Percentylkraj"
           },
           "miejsceKraj": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Miejscekraj"
           },
           "liczbaSzkolKraj": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Liczbaszkolkraj"
           },
           "percentylWojewodztwo": {
             "type": "number",
-            "maximum": 100.0,
-            "minimum": 0.0,
+            "maximum": 100,
+            "minimum": 0,
             "title": "Percentylwojewodztwo"
           },
           "miejsceWojewodztwo": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Miejscewojewodztwo"
           },
           "liczbaSzkolWojewodztwo": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Liczbaszkolwojewodztwo"
           },
           "percentylPowiat": {
             "type": "number",
-            "maximum": 100.0,
-            "minimum": 0.0,
+            "maximum": 100,
+            "minimum": 0,
             "title": "Percentylpowiat"
           },
           "miejscePowiat": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Miejscepowiat"
           },
           "liczbaSzkolPowiat": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Liczbaszkolpowiat"
           },
           "szkolaId": {
@@ -1027,7 +1124,7 @@
         "properties": {
           "rok": {
             "type": "integer",
-            "minimum": 2000.0,
+            "minimum": 2000,
             "title": "Rok"
           },
           "rodzajRankingu": {
@@ -1035,56 +1132,56 @@
           },
           "wynik": {
             "type": "number",
-            "maximum": 100.0,
-            "minimum": 0.0,
+            "maximum": 100,
+            "minimum": 0,
             "title": "Wynik"
           },
           "percentylKraj": {
             "type": "number",
-            "maximum": 100.0,
-            "minimum": 0.0,
+            "maximum": 100,
+            "minimum": 0,
             "title": "Percentylkraj"
           },
           "miejsceKraj": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Miejscekraj"
           },
           "liczbaSzkolKraj": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Liczbaszkolkraj"
           },
           "percentylWojewodztwo": {
             "type": "number",
-            "maximum": 100.0,
-            "minimum": 0.0,
+            "maximum": 100,
+            "minimum": 0,
             "title": "Percentylwojewodztwo"
           },
           "miejsceWojewodztwo": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Miejscewojewodztwo"
           },
           "liczbaSzkolWojewodztwo": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Liczbaszkolwojewodztwo"
           },
           "percentylPowiat": {
             "type": "number",
-            "maximum": 100.0,
-            "minimum": 0.0,
+            "maximum": 100,
+            "minimum": 0,
             "title": "Percentylpowiat"
           },
           "miejscePowiat": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Miejscepowiat"
           },
           "liczbaSzkolPowiat": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Liczbaszkolpowiat"
           },
           "szkolaId": {
@@ -1187,25 +1284,25 @@
         "properties": {
           "page": {
             "type": "integer",
-            "minimum": 1.0,
+            "minimum": 1,
             "title": "Page",
             "description": "Current page number"
           },
           "pageSize": {
             "type": "integer",
-            "maximum": 100.0,
+            "maximum": 100,
             "title": "Pagesize",
             "description": "Number of items per page"
           },
           "total": {
             "type": "integer",
-            "minimum": 0.0,
+            "minimum": 0,
             "title": "Total",
             "description": "Total number of schools matching the ranking params criteria"
           },
           "totalPages": {
             "type": "integer",
-            "minimum": 0.0,
+            "minimum": 0,
             "title": "Totalpages",
             "description": "Total number of pages available based on the page_size"
           },
@@ -1385,7 +1482,7 @@
             "anyOf": [
               {
                 "type": "integer",
-                "minimum": 0.0
+                "minimum": 0
               },
               {
                 "type": "null"
@@ -1521,8 +1618,8 @@
             "anyOf": [
               {
                 "type": "number",
-                "maximum": 100.0,
-                "minimum": 0.0
+                "maximum": 100,
+                "minimum": 0
               },
               {
                 "type": "null"
@@ -1622,6 +1719,28 @@
             },
             "type": "array",
             "title": "Rankingi"
+          },
+          "latitude": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Latitude"
+          },
+          "longitude": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Longitude"
           }
         },
         "type": "object",
@@ -1659,7 +1778,9 @@
           "ksztalcenieZawodowe",
           "wynikiE8",
           "wynikiEm",
-          "rankingi"
+          "rankingi",
+          "latitude",
+          "longitude"
         ],
         "title": "SzkolaPublicWithRelations"
       },
