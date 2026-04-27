@@ -94,6 +94,7 @@ useSeoMeta({
                 <div
                     class="min-w-0 space-y-6"
                     :class="hasLeftColumnContent ? 'lg:col-span-4' : ''">
+                    <SchoolDetailsLocationCard :school="school" />
                     <SchoolDetailsRankingSection :school="school" />
                     <SchoolInfoCard :school="school" />
                 </div>

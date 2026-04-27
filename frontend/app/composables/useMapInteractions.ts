@@ -69,7 +69,9 @@ export const useMapInteractions = (
             setFeatureStateSafe(map, selectedSchoolId, { clicked: false })
         }
 
-        if (setFeatureStateSafe(map, pendingSelectedSchoolId, { clicked: true })) {
+        if (
+            setFeatureStateSafe(map, pendingSelectedSchoolId, { clicked: true })
+        ) {
             selectedSchoolId = pendingSelectedSchoolId
         }
     }
