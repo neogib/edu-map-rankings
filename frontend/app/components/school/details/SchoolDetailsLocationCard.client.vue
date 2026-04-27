@@ -53,7 +53,7 @@ const mapRoute = computed(() => {
         </template>
 
         <div
-            class="overflow-hidden rounded-xl border border-default bg-muted/30">
+            class="mx-auto w-full max-w-md overflow-hidden rounded-xl border border-default bg-muted/30">
             <div
                 v-if="hasCoordinates"
                 class="aspect-square w-full overflow-hidden bg-accented/20">
@@ -77,13 +77,15 @@ const mapRoute = computed(() => {
             </div>
         </div>
 
-        <UButton
-            :to="mapRoute"
-            color="primary"
-            variant="soft"
-            icon="i-lucide-map-pinned"
-            block>
-            Zobacz na mapie
-        </UButton>
+        <div class="mx-auto w-full max-w-md">
+            <UButton
+                :to="mapRoute"
+                color="primary"
+                variant="soft"
+                icon="i-lucide-map-pinned"
+                block>
+                Zobacz na mapie
+            </UButton>
+        </div>
     </UCard>
 </template>
