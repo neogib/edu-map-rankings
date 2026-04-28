@@ -61,6 +61,17 @@ const handleContentTransitionEnd = (event: Event) => {
     }
 }
 
+const handleOpenChange = (open: boolean) => {
+    if (!open) emit("close")
+}
+
+defineShortcuts({
+    escape: {
+        usingInput: true,
+        handler: () => emit("close"),
+    },
+})
+
 const isPublicSchool = (status: string) => {
     return !status.toLowerCase().includes("nie")
 }
@@ -75,6 +86,7 @@ const scoreColor = computed(() => {
     <USlideover
         side="left"
         :modal="!isLgUp"
+        :dismissible="false"
         :transition="!isDismissedBySwipe"
         title="Szczegóły placówki"
         close-icon="i-mdi-close"
@@ -82,7 +94,8 @@ const scoreColor = computed(() => {
         :ui="{
             overlay: 'lg:hidden',
             body: 'overflow-x-auto p-0 sm:p-0',
-        }">
+        }"
+        @update:open="handleOpenChange">
         <template #body>
             <div class="relative">
                 <div

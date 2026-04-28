@@ -5,7 +5,6 @@ import schoolIconUrl from "~/assets/images/figures/sdf/school.png"
 import starIconUrl from "~/assets/images/figures/sdf/star.png"
 import bookIconUrl from "~/assets/images/figures/sdf/book.png"
 
-// constants/mapConfig.ts
 export const MAP_CONFIG = {
     lightStyle: "/map-styles/style-light-pl.json",
     darkStyle: "/map-styles/dark-style-pl.json",

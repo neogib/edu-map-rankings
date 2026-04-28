@@ -29,13 +29,10 @@ const selectedSchoolIdFromRoute = computed<number | null>(() => {
 })
 
 const navigateToMap = () =>
-    navigateTo(
-        {
-            path: "/map",
-            query: route.query,
-        },
-        { replace: true },
-    )
+    navigateTo({
+        path: "/map",
+        query: route.query,
+    })
 
 const navigateToSchool = (schoolId: number) =>
     navigateTo({
