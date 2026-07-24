@@ -15,9 +15,14 @@
         "format:check": "prettier --check .",
         "api:generate": "node scripts/generate-api-types.js",
         "map:translate": "node scripts/translate-map-style.js",
-        "sdf:generate": "bash scripts/sdf.sh"
+        "sdf:generate": "bash scripts/sdf.sh",
+        "cap:build": "CAPACITOR=true nuxt generate && npx cap sync android",
+        "cap:open": "npx cap open android",
+        "cap:run": "CAPACITOR=true nuxt generate && npx cap run android"
     },
     "dependencies": {
+        "@capacitor/android": "^8.4.2",
+        "@capacitor/core": "^8.4.1",
         "@indoorequal/vue-maplibre-gl": "^8.4.2",
         "@nuxt/eslint": "1.12.1",
         "@nuxt/image": "^2.0.0",
@@ -40,6 +45,7 @@
         "vue-router": "4"
     },
     "devDependencies": {
+        "@capacitor/cli": "^8.4.1",
         "@iconify-json/heroicons": "^1.2.3",
         "@iconify-json/line-md": "^1.2.13",
         "@iconify-json/lucide": "^1.2.90",

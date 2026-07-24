@@ -1,11 +1,13 @@
 import tailwindcss from "@tailwindcss/vite"
 
 const isDev = process.env.NODE_ENV === "development"
+const isCapacitor = process.env.CAPACITOR === "true"
 const siteUrl = process.env.NUXT_SITE_URL ?? "https://eduradar.4one.ovh"
 const siteName = process.env.NUXT_SITE_NAME ?? "EduRadar"
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+    ssr: !isCapacitor,
     compatibilityDate: "2025-07-15",
     devtools: { enabled: isDev },
     sourcemap: isDev
@@ -23,7 +25,7 @@ export default defineNuxtConfig({
         "nuxt-charts",
         "@nuxt/scripts",
         "@nuxtjs/turnstile",
-        "nuxt-security",
+        ...(isCapacitor ? [] : ["nuxt-security"]),
         "@nuxtjs/seo",
     ],
     turnstile: {
@@ -41,7 +43,9 @@ export default defineNuxtConfig({
     runtimeConfig: {
         proxyURL: "http://localhost:8000/api/v1",
         public: {
-            apiBase: "/api/v1",
+            apiBase: isCapacitor
+                ? (process.env.NUXT_PUBLIC_API_BASE ?? `${siteUrl}/api/v1`)
+                : "/api/v1",
             martinBase: "http://localhost:3001",
         },
     },
