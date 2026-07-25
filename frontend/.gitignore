@@ -5,6 +5,7 @@
 .nitro/
 .cache/
 dist/
+dist
 sw.*
 
 # Node dependencies and package manager artifacts
@@ -37,3 +38,6 @@ coverage/
 
 # google search console verification file
 google*.html
+
+# mobile app
+android/

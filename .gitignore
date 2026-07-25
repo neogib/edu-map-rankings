@@ -32,3 +32,4 @@ docker-compose.override.yml
 
 # Local assistant instructions
 AGENTS.md
+.antigravitycli/
