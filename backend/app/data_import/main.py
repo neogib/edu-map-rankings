@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import logging
+from collections.abc import Callable
 
 from app.core.logging import configure_logging
 from app.data_import.api.db.decomposer import Decomposer
@@ -21,7 +22,7 @@ async def api_importer() -> None:
         if not status.fetch_enabled:
             logger.info(f"⏭️ Skipping fetching {status.name} schools - fetch disabled")
             continue
-        zlikwidowana = True if status.name == "CLOSED" else False
+        zlikwidowana = status.is_closed
         api_fetcher = SchoolsAPIFetcher(zlikwidowana=zlikwidowana)
 
         start_page = status.start_page
@@ -69,33 +70,35 @@ async def api_importer() -> None:
     )
 
 
-def excel_importer():
+def excel_importer(year: int | None = None):
     reader = ExcelReader()
-    logger.info("📄 Starting Excel data import...")
+    year_str = f" for year {year}" if year is not None else ""
+    logger.info(f"📄 Starting Excel data import{year_str}...")
     for exam_type in ExamType:
         logger.info(f"📊 Processing {exam_type.name} exam data...")
-        for year, exam_data in reader.load_files(exam_type):
-            logger.info(f"🗓️ Processing {exam_type.name} data for year {year}...")
-            with TableSplitter(exam_data, exam_type, year) as splitter:
+        for file_year, exam_data in reader.load_files(exam_type, year=year):
+            logger.info(f"🗓️ Processing {exam_type.name} data for year {file_year}...")
+            with TableSplitter(exam_data, exam_type, file_year) as splitter:
                 if not splitter.initialize():
                     logger.warning(
-                        f"⚠️ Skipping invalid {exam_type.name} data for year {year}"
+                        f"⚠️ Skipping invalid {exam_type.name} data for year {file_year}"
                     )
                     continue  # skip this file - it was invalid
                 splitter.split_exam_results()
                 logger.info(
-                    f"✅ Successfully processed {exam_type.name} data for year {year}"
+                    f"✅ Successfully processed {exam_type.name} data for year {file_year}"
                 )
     logger.info("🎉 Excel data import completed")
 
 
 class ImportOptions:
     option: str  # pyright: ignore[reportUninitializedInstanceVariable]
+    year: int | None = None
 
 
-COMMANDS = {
-    "api": lambda: asyncio.run(api_importer()),
-    "excel": excel_importer,
+COMMANDS: dict[str, Callable[[int | None], None]] = {
+    "api": lambda _year: asyncio.run(api_importer()),
+    "excel": lambda year: excel_importer(year=year),
 }
 
 
@@ -113,13 +116,21 @@ def main():
         choices=["api", "excel"],
         help="Operation to perform: api (schools API import) or excel (exam data import)",
     )
+    _ = parser.add_argument(
+        "-y",
+        "--year",
+        type=int,
+        required=False,
+        default=None,
+        help="Optional year to filter excel import files",
+    )
 
     args = ImportOptions()
     _ = parser.parse_args(namespace=args)
 
     try:
         logger.info(f"🚀 Starting {args.option} operation...")
-        COMMANDS[args.option]()
+        COMMANDS[args.option](args.year)
         logger.info(f"✅ {args.option.capitalize()} operation completed successfully")
     except Exception as e:
         logger.error(f"❌ Error executing {args.option} operation: {e}")

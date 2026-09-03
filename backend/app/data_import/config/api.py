@@ -9,10 +9,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class SchoolStatus(Enum):
     "Defines which school statuses to fetch from the API and their corresponding starting pages"
 
-    ACTIVE = (True, 1)
-    CLOSED = (True, 1)
+    ACTIVE = (False, False, 1)
+    CLOSED = (True, True, 1)
 
-    def __init__(self, fetch_enabled: bool, start_page: int):
+    def __init__(self, is_closed: bool, fetch_enabled: bool, start_page: int):
+        self.is_closed = is_closed
         self.fetch_enabled = fetch_enabled
         self.start_page = start_page
 

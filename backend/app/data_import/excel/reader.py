@@ -43,19 +43,21 @@ class ExcelReader:
         if base_data_path is not None:
             self.base_data_path = base_data_path
 
-    def load_files(self, exam_type: ExamType) -> Iterator[tuple[int, pd.DataFrame]]:
+    def load_files(
+        self, exam_type: ExamType, year: int | None = None
+    ) -> Iterator[tuple[int, pd.DataFrame]]:
         """
         Loads Excel files from E8 or EM directories
         """
         target_dir = exam_type.directory_name
         path = self.base_data_path / target_dir
         logger.info(f"📂 Accessing data from directory: {path}")
-        yield from self.read_files_from_dir(path, exam_type)
+        yield from self.read_files_from_dir(path, exam_type, year=year)
 
         logger.info(f"✅ Successfully processed all files from: {path}")
 
     def read_files_from_dir(
-        self, directory_path: Path, exam_type: ExamType
+        self, directory_path: Path, exam_type: ExamType, year: int | None = None
     ) -> Iterator[tuple[int, pd.DataFrame]]:
         # Check that the directory actually exists
         if not directory_path.exists():
@@ -66,6 +68,8 @@ class ExcelReader:
         for file_path in directory_path.glob("*.xlsx"):
             metadata = self._parse_file_metadata(file_path, exam_type)
             if metadata is None:
+                continue
+            if year is not None and metadata.year != year:
                 continue
             files_metadata.append(metadata)
 
